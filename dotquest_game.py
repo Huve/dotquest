@@ -7,18 +7,17 @@ from pygame.locals import *
 
 class Game():
     """Game class that stores what is occurring during the game."""
-    def __init__(self, w, h):
+    def __init__(self, w, h, display):
         """Initializes the game.
 
         Args:
           w: width of the game screen.
           h: height of the game screen.
         """
-        pygame.init()
-        pygame.mixer.init()
         self.player = player.Player()
         self.biome = self.player.last_biome
-        self.screen = game_screen.GameScreen(self, pygame.display, self.player, self.biome, w, h)
+        self.display = display
+        self.screen = game_screen.GameScreen(self, self.display, self.player, self.biome, w, h)
         self.clock = pygame.time.Clock()
         self.clock.tick(30)
         self.up = False
@@ -31,7 +30,10 @@ class Game():
         self.current_press = None
         self.layer_1 = self.screen.entity_layer_1
        # self.layer_2 = self.screen.entity_layer_2
-        pygame.mixer.music.load("audio/splort_2.mp3")
+        if not pygame.mixer:
+            print('NO MIXER')
+            pygame.mixer.init()
+        pygame.mixer.music.load("audio/splort_4.mp3")
         pygame.mixer.music.play()
 
     def run(self):
