@@ -4,6 +4,7 @@ import random
 import sys
 
 from dotquest_game import Game
+from character_creation import CharacterCreationMenu
 from pygame.locals import *
 from pygame import Rect
 
@@ -55,7 +56,6 @@ class MenuDot():
             button_color = self.background_color
         pygame.draw.rect(self.screen, button_color, (x-15, y-15, button_width, button_height))
         if self.dot_id != "0":
-            print(self.dot_id)
             pygame.draw.circle(self.screen, self.color, (x, y), 10)
             dot_text = "%s (%s %s): %s" % (self.dot_data['name'],
                                             self.dot_data['level'],
@@ -169,9 +169,10 @@ class MainMenu():
         game = Game(self.w, self.h, self.screen, dot)
         game.run()
 
-    def select_character(self):
+    def load_character_creation_menu(self):
         """Selects a character for this session."""
-        pass
+        char_creation_menu = CharacterCreationMenu(self.screen, self.w, self.h)
+        char_creation_menu.run()
 
     def select_server(self):
         """Selects a server for this session."""
@@ -205,12 +206,10 @@ class MainMenu():
                     pygame.quit(); sys.exit()
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
                     pygame.quit(); sys.exit()
-                if e.type == KEYDOWN and e.key == K_RETURN:
-                    self.load_game()
-                if e.type == KEYDOWN and e.key == K_q:
-                    self.load_game()
                 if e.type == self.bloop_event:
                     self.animate_bloops()
                 if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id != "0":
                     self.load_game(self.selected_dot_id)
+                if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id == "0":
+                    self.load_character_creation_menu()
             pygame.display.update()

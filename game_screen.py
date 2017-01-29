@@ -9,7 +9,7 @@ from camera import simple_camera, complex_camera
 
 class GameScreen():
     """Game Screen class that acts as a view for the user"""
-    def __init__(self, game, screen, player, biome, w, h, menu=False):
+    def __init__(self, game, screen, player, biome, w, h):
         self.tile_size = 64
         self.w = w
         self.h = h
