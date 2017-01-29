@@ -208,8 +208,9 @@ class MainMenu():
                     pygame.quit(); sys.exit()
                 if e.type == self.bloop_event:
                     self.animate_bloops()
-                if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id != "0":
-                    self.load_game(self.selected_dot_id)
-                if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id == "0":
-                    self.load_character_creation_menu()
+                if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id:
+                    if self.selected_dot_id != "0":
+                        self.load_game(self.selected_dot_id)
+                    else:
+                        self.load_character_creation_menu()
             pygame.display.update()
