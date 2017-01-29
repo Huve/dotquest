@@ -2,6 +2,8 @@
 #
 # April 3 2016
 import pygame
+import json # change when moving to sqlite
+import glob # change when moving to sqlite
 
 class Entity(pygame.sprite.Sprite):
 
@@ -11,11 +13,10 @@ class Entity(pygame.sprite.Sprite):
         
 class Player(Entity):
     """Player class Entity."""
-    def __init__(self):
+    def __init__(self, pid):
         Entity.__init__(self)
-        self.load_player_data()
-        self.rect = pygame.Rect(self.x, self.y, 32, 64)
-
+        self.load_player_data(pid)
+        self.rect = pygame.Rect(self.data['x'], self.data['y'], 32, 64)
 
     def get_color(self):
         class_color = {
@@ -23,8 +24,7 @@ class Player(Entity):
             "heal": (0, 255, 0),
             "deep": (0, 0, 255)
             }
-        return class_color[self.player_class]
-        
+        return class_color[self.data['player_class']]
         
     def update(self, direction, layer_1):
         """Update the player's position.
@@ -81,20 +81,23 @@ class Player(Entity):
 
             
     def draw_player(self):
-        self.surface = pygame.Surface((self.level * 2, self.level * 2), pygame.SRCALPHA, 32)
-        self.graphic = pygame.draw.circle(self.surface, self.color, (self.level, self.level), self.level)
+        level = self.data["level"]
+        self.surface = pygame.Surface((level * 2, level * 2), pygame.SRCALPHA, 32)
+        self.graphic = pygame.draw.circle(self.surface, self.color, (level, level), level)
 
-    def load_player_data(self):
-        # TODO: load from database
-        self.last_biome = "forest"
-        self.player_class = "tank"
-        self.name = "Dlob"
-        self.x = 500
-        self.y = 500
-        self.level = 10
-        self.health = 10
-        self.mana = 10
-        self.strength = 10
-        self.intelligence = 10
-        self.dexterity = 10
+    def load_player_data(self, player_id):
+        with open("data/characters.json", 'r') as database:
+            j = json.load(database)
+            self.data = j[player_id]
+            print("loaded player: %s" % self.data)
         self.color = self.get_color()
+
+    def save(self):
+        pass
+
+def main():
+    pid = "1"
+    player = Player(pid)
+        
+if __name__ == "__main__":
+    main()

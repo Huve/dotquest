@@ -1,3 +1,4 @@
+import json
 import pygame
 import random
 import sys
@@ -6,16 +7,92 @@ from dotquest_game import Game
 from pygame.locals import *
 from pygame import Rect
 
+class MenuDot():
+    """A Dot to choose from on the home screen."""
+    def __init__(self, menu, dot_id, dot_data, y):
+        self.dot_data = dot_data
+        self.dot_id = dot_id
+        self.menu = menu
+        self.y = y
+        if dot_id != 0:
+            self.color = self.get_color()
+        self.screen = self.menu.screen
+        self.font = pygame.font.SysFont('Roboto', 20)
+        self.background_color = (220, 220, 220)
+        self.highlight = (208, 224, 227)
+
+    def choose(self):
+        """Chooses this dot for play."""
+        pass
+
+    def test_mos_pos(self, x, y, width, height, mos_pos):
+        """Detects if mos pos is in box."""
+        mos_x, mos_y = mos_pos
+        x_inside = False
+        y_inside = False
+        if mos_x > x and (mos_x < x + width):
+            x_inside = True
+        if mos_y > y and (mos_y < y + height):
+            y_inside = True
+        if x_inside and y_inside:
+            return True
+        else:
+            return False
+        
+        
+    def draw(self, mos_pos):
+        """Draws one of the dots in the data"""
+        x = 510
+        y = 510 + 30 * self.y
+        button_width = 200
+        button_height = 30
+        if self.test_mos_pos(x-15, y-15, button_width, button_height, mos_pos):
+            button_color = self.highlight
+            self.menu.selected_dot_id = self.dot_id
+        else:
+            if self.menu.selected_dot_id == self.dot_id:
+                self.dot_id = None
+            button_color = self.background_color
+        pygame.draw.rect(self.screen, button_color, (x-15, y-15, button_width, button_height))
+        if self.dot_id != 0:
+            pygame.draw.circle(self.screen, self.color, (x, y), 10)
+            dot_text = "%s (%s %s): %s" % (self.dot_data['name'],
+                                            self.dot_data['level'],
+                                            self.dot_data['player_class'],
+                                            self.dot_data['last_biome'])
+            label = self.font.render(dot_text, 1, (0, 0, 0))
+        else:
+            dot_text = "+ Create new Dot"
+            label = self.font.render(dot_text, 1, (0, 0, 0))
+        self.screen.blit(label, (x+20, y-6))
+        
+    def delete(self):
+        """Deletes this dot permanently."""
+        pass
+
+    def get_color(self):
+        class_color = {
+            "tank": (255, 0, 0),
+            "heal": (0, 255, 0),
+            "deep": (0, 0, 255)
+            }
+        return class_color[self.dot_data['player_class']]
+    
 class MainMenu():
     """The menu screen when starting the game."""
     def __init__(self, w, h):
         self.w = w
         self.h = h
         self.timer = 0
+        with open("data/characters.json", 'r') as database:
+            self.all_dots = json.load(database)
+        self.all_dots[0] = {}
+        self.selected_dot_id = None
+        self.menu_dots = []
         self.bloop_event = pygame.USEREVENT + 1
         self.bloops = {}
         pygame.init()
-        self.font = pygame.font.SysFont('Arial', 45)
+        self.font = pygame.font.SysFont('Roboto', 45)
         self.display = pygame.display
         self.screen = self.display.set_mode((w, h))
         
@@ -63,6 +140,19 @@ class MainMenu():
             r.move_ip(x_adjust, y_adjust)
             pygame.draw.circle(self.screen, c, (r.centerx, r.centery), r.width)
             
+    def draw_selections(self, x, y):
+        count = 0
+        for dot in self.all_dots.keys():
+            if dot != 0:
+                count += 1
+                menudot = MenuDot(self, dot, self.all_dots[dot], count)
+                self.menu_dots.append(menudot)
+                menudot.draw((x, y))
+        if count < 3:
+            menudot = MenuDot(self, 0, {}, 3)
+            self.menu_dots.append(menudot)
+            menudot.draw((x, y))
+        
     def set_text(self, text, pos, color=(0, 0, 0)):
         """Sets the menu text."""
         label = self.font.render(text, 1, color)
@@ -73,9 +163,9 @@ class MainMenu():
         self.bg = pygame.image.load(image).convert()
         self.screen.blit(self.bg, (0, 0))
    
-    def load_game(self):
+    def load_game(self, dot):
         """Loads the game with the character and server."""
-        game = Game(self.w, self.h, self.screen)
+        game = Game(self.w, self.h, self.screen, dot)
         game.run()
 
     def select_character(self):
@@ -101,12 +191,15 @@ class MainMenu():
         self.draw_bloop((300, 340),(300, 480), 40)
         self.draw_bloop((300, 340),(100, 420), 10)
         self.do_animations()
-        
+        self.set_text("PRESS ENTER", (500, 500))
         
         while 1:
+            mos_x, mos_y = pygame.mouse.get_pos()
             seconds = (pygame.time.get_ticks()-start_ticks)/1000
             self.screen.fill((255, 255, 255))
             self.load_background("images/menu_background.png")
+            selection = self.draw_selections(mos_x, mos_y)
+           # print(selection)
             for e in pygame.event.get():
                 if e.type == QUIT:
                     pygame.quit(); sys.exit()
@@ -114,8 +207,12 @@ class MainMenu():
                     pygame.quit(); sys.exit()
                 if e.type == KEYDOWN and e.key == K_RETURN:
                     self.load_game()
+                if e.type == KEYDOWN and e.key == K_q:
+                    self.load_game()
                 if e.type == self.bloop_event:
                     self.animate_bloops()
-                if seconds > 7:
-                    self.set_text("PRESS ENTER", (500, 500))
+                if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id != 0:
+                    self.load_game(self.selected_dot_id)
+                #if seconds > 7:
+                    #self.set_text("Play a dot:", (500, 500))
             pygame.display.update()

@@ -7,15 +7,15 @@ from pygame.locals import *
 
 class Game():
     """Game class that stores what is occurring during the game."""
-    def __init__(self, w, h, display):
+    def __init__(self, w, h, display, dot_id):
         """Initializes the game.
 
         Args:
           w: width of the game screen.
           h: height of the game screen.
         """
-        self.player = player.Player()
-        self.biome = self.player.last_biome
+        self.player = player.Player(dot_id)
+        self.biome = self.player.data["last_biome"]
         self.display = display
         self.screen = game_screen.GameScreen(self, self.display, self.player, self.biome, w, h)
         self.clock = pygame.time.Clock()
@@ -54,7 +54,6 @@ class Game():
                     self.direction = "right"
                 if e.type == KEYDOWN and e.key == K_SPACE:
                     self.running = True
-
                 if e.type == KEYUP:
                     if e.key == K_UP or e.key == K_DOWN or e.key == K_LEFT or e.key == K_RIGHT:
                         self.direction = None
