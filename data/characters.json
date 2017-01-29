@@ -1,0 +1,4 @@
+{
+"1": {"player_class": "tank", "level": 10, "name": "Dlob", "last_biome": "forest", "x": 500, "y": 500},
+"2": {"player_class": "heal", "level": 15, "name": "Hlob", "last_biome": "forest", "x": 500, "y": 500}
+}
