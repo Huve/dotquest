@@ -14,7 +14,7 @@ class MenuDot():
         self.dot_id = dot_id
         self.menu = menu
         self.y = y
-        if dot_id != 0:
+        if dot_id != "0":
             self.color = self.get_color()
         self.screen = self.menu.screen
         self.font = pygame.font.SysFont('Roboto', 20)
@@ -51,10 +51,11 @@ class MenuDot():
             self.menu.selected_dot_id = self.dot_id
         else:
             if self.menu.selected_dot_id == self.dot_id:
-                self.dot_id = None
+                self.menu.selected_dot_id = None
             button_color = self.background_color
         pygame.draw.rect(self.screen, button_color, (x-15, y-15, button_width, button_height))
-        if self.dot_id != 0:
+        if self.dot_id != "0":
+            print(self.dot_id)
             pygame.draw.circle(self.screen, self.color, (x, y), 10)
             dot_text = "%s (%s %s): %s" % (self.dot_data['name'],
                                             self.dot_data['level'],
@@ -149,7 +150,7 @@ class MainMenu():
                 self.menu_dots.append(menudot)
                 menudot.draw((x, y))
         if count < 3:
-            menudot = MenuDot(self, 0, {}, 3)
+            menudot = MenuDot(self, "0", {}, 3)
             self.menu_dots.append(menudot)
             menudot.draw((x, y))
         
@@ -199,7 +200,6 @@ class MainMenu():
             self.screen.fill((255, 255, 255))
             self.load_background("images/menu_background.png")
             selection = self.draw_selections(mos_x, mos_y)
-           # print(selection)
             for e in pygame.event.get():
                 if e.type == QUIT:
                     pygame.quit(); sys.exit()
@@ -211,8 +211,6 @@ class MainMenu():
                     self.load_game()
                 if e.type == self.bloop_event:
                     self.animate_bloops()
-                if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id != 0:
+                if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id != "0":
                     self.load_game(self.selected_dot_id)
-                #if seconds > 7:
-                    #self.set_text("Play a dot:", (500, 500))
             pygame.display.update()
