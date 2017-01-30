@@ -44,7 +44,6 @@ class Biome():
             for row in reader:
                 for tile in row:
                     self.foreground_data.append(tile)
-        print(self.foreground_data[0:200])
         self.background_surface = pygame.Surface((self.w, self.h))
         self.draw_background()
         self.draw_foreground()
