@@ -39,19 +39,24 @@ class Game():
     def run(self):
         """Runs the game."""
         while 1:
+            keys = pygame.key.get_pressed()
+            if keys[K_LEFT]:
+                self.direction = "left"
+                self.player.update(self.direction, self.layer_1)
+            if keys[K_RIGHT]:
+                self.direction = "right"
+                self.player.update(self.direction, self.layer_1)
+            if keys[K_UP]:
+                self.direction = "up"
+                self.player.update(self.direction, self.layer_1)
+            if keys[K_DOWN]:
+                self.direction = "down"
+                self.player.update(self.direction, self.layer_1)
             for e in pygame.event.get():
                 if e.type == QUIT:
                     pygame.quit(); sys.exit()
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
                     pygame.quit(); sys.exit()
-                if e.type == KEYDOWN and e.key == K_UP:
-                    self.direction = "up"
-                if e.type == KEYDOWN and e.key == K_DOWN:
-                    self.direction = "down"
-                if e.type == KEYDOWN and e.key == K_LEFT:
-                    self.direction = "left"
-                if e.type == KEYDOWN and e.key == K_RIGHT:
-                    self.direction = "right"
                 if e.type == KEYDOWN and e.key == K_SPACE:
                     self.running = True
                 if e.type == KEYUP:
