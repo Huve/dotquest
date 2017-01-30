@@ -1,3 +1,5 @@
+import csv
+import math
 import pygame
 from player import Entity
 
@@ -6,10 +8,12 @@ class Block(Entity):
     def __init__(self, a, x, y):
         Entity.__init__(self)
         self.image_map = {
-        "tree":"images/tree_1.png",
+        "trees":"images/tree_2.png",
         "bush":"images/bush_1.png",
-        "rock":"images/bush_1.png",
+        "rocks":"images/rock_1.png",
+        "boundary":"images/bush_1.png",
         }
+        self.image = pygame.Surface((64, 64))
         self.image = pygame.image.load(self.image_map[a])
         self.image.convert()
         self.rect = pygame.Rect(x, y, 64, 64)
@@ -19,7 +23,7 @@ class Block(Entity):
 
 class Biome():
     """A biome in which players can journey."""
-    def __init__(self, geography, w=10000, h=10000):
+    def __init__(self, geography, screen, w=6400, h=6400):
         """Initializes the biome.
 
         Args:
@@ -29,9 +33,18 @@ class Biome():
         """
         self.w = w
         self.h = h
+        self.tile_size = 64
         self.geography = geography
+        self.screen = screen
+        foreground_entities = "maps/" + geography + "_entities.tsv"
+        self.foreground_data = []
+        with open(foreground_entities, 'r') as f_e:
+            reader = csv.reader(f_e, delimiter="\t")
+            for row in reader:
+                self.foreground_data.append(row)
         self.background_surface = pygame.Surface((self.w, self.h))
         self.draw_background()
+        self.draw_foreground()
 
     def draw_background(self):
         """Draws the biome background color."""
@@ -42,14 +55,14 @@ class Biome():
         
     def draw_foreground(self):
         """Draws the first layer (player level) of biome."""
-        foregrounds = {
-            "forest": {
-                "tree": 0,
-                "bush": 0,
-                "rock": 0
-                }
-            }
-        self.foreground_densities = foregrounds[self.geography]
+        index = 0
+        for tile in self.foreground_data[0]:
+            if tile != "empty":
+                x_pos = (index * self.tile_size) % self.w
+                y_pos = math.floor((index * self.tile_size) / self.w) * self.tile_size
+                b = Block(tile, x_pos, y_pos)
+                self.screen.entity_layer_1.add(b)
+            index += 1
 
     def draw_overlay(self):
         """Draws the top layer of the biome."""
