@@ -6,7 +6,6 @@ import json # change when moving to sqlite
 import glob # change when moving to sqlite
 
 class Entity(pygame.sprite.Sprite):
-
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
@@ -16,7 +15,10 @@ class Player(Entity):
     def __init__(self, pid):
         Entity.__init__(self)
         self.load_player_data(pid)
-        self.rect = pygame.Rect(self.data['x'], self.data['y'], 5, 5)
+        self.rect = pygame.Rect(self.data['x'],
+                                self.data['y'],
+                                self.data['level'],
+                                self.data['level'])
 
     def get_color(self):
         class_color = {

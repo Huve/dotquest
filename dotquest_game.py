@@ -43,13 +43,16 @@ class Game():
             if keys[K_LEFT]:
                 self.direction = "left"
                 self.player.update(self.direction, self.layer_1)
-            if keys[K_RIGHT]:
+            if keys[K_a]:
+                self.direction = "left"
+                self.player.update(self.direction, self.layer_1)
+            if keys[K_RIGHT] or keys[K_d]:
                 self.direction = "right"
                 self.player.update(self.direction, self.layer_1)
-            if keys[K_UP]:
+            if keys[K_UP] or keys[K_w]:
                 self.direction = "up"
                 self.player.update(self.direction, self.layer_1)
-            if keys[K_DOWN]:
+            if keys[K_DOWN] or keys[K_s]:
                 self.direction = "down"
                 self.player.update(self.direction, self.layer_1)
             for e in pygame.event.get():
@@ -60,7 +63,7 @@ class Game():
                 if e.type == KEYDOWN and e.key == K_SPACE:
                     self.running = True
                 if e.type == KEYUP:
-                    if e.key == K_UP or e.key == K_DOWN or e.key == K_LEFT or e.key == K_RIGHT:
+                    if e.key == K_UP or e.key == K_DOWN or e.key == K_LEFT or e.key == K_RIGHT or e.key == K_d or e.key == K_a or e.key == K_w or e.key == K_s:
                         self.direction = None
             self.player.update(self.direction, self.layer_1)
             self.screen.draw_layers() 
