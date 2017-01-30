@@ -52,7 +52,8 @@ class Biome():
     def draw_background(self):
         """Draws the biome background color."""
         backgrounds = {
-            "forest": (38, 106, 46)
+            "forest": (38, 106, 46),
+            "desert": (237, 201, 175)
             }
         self.background_surface.fill(backgrounds[self.geography])
         
