@@ -8,10 +8,10 @@ class Block(Entity):
     def __init__(self, a, x, y):
         Entity.__init__(self)
         self.image_map = {
-        "trees":"images/tree_2.png",
-        "bush":"images/bush_1.png",
-        "rocks":"images/rock_1.png",
-        "boundary":"images/bush_1.png",
+        "T":"images/tree_2.png",
+        "V":"images/bush_1.png",
+        "R":"images/rock_1.png",
+        "X":"images/bush_1.png",
         }
         self.image = pygame.Surface((64, 64))
         self.image = pygame.image.load(self.image_map[a])
@@ -31,6 +31,7 @@ class Biome():
           w: width of biome.
           h: height of biome.
         """
+        self.empty_tile = "-"
         self.w = w
         self.h = h
         self.tile_size = 64
@@ -41,7 +42,9 @@ class Biome():
         with open(foreground_entities, 'r') as f_e:
             reader = csv.reader(f_e, delimiter="\t")
             for row in reader:
-                self.foreground_data.append(row)
+                for tile in row:
+                    self.foreground_data.append(tile)
+        print(self.foreground_data[0:200])
         self.background_surface = pygame.Surface((self.w, self.h))
         self.draw_background()
         self.draw_foreground()
@@ -56,8 +59,8 @@ class Biome():
     def draw_foreground(self):
         """Draws the first layer (player level) of biome."""
         index = 0
-        for tile in self.foreground_data[0]:
-            if tile != "empty":
+        for tile in self.foreground_data:
+            if tile != self.empty_tile:
                 x_pos = (index * self.tile_size) % self.w
                 y_pos = math.floor((index * self.tile_size) / self.w) * self.tile_size
                 b = Block(tile, x_pos, y_pos)

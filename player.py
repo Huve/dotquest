@@ -16,7 +16,7 @@ class Player(Entity):
     def __init__(self, pid):
         Entity.__init__(self)
         self.load_player_data(pid)
-        self.rect = pygame.Rect(self.data['x'], self.data['y'], 32, 64)
+        self.rect = pygame.Rect(self.data['x'], self.data['y'], 5, 5)
 
     def get_color(self):
         class_color = {
