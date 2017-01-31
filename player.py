@@ -87,8 +87,8 @@ class Player(Entity):
             
     def draw_player(self):
         level = self.data["level"]
-        self.surface = pygame.Surface((level * 2, level * 2), pygame.SRCALPHA, 32)
-        self.graphic = pygame.draw.circle(self.surface, self.color, (level, level), level)
+        self.surface = pygame.Surface((5 + level, 5 + level), pygame.SRCALPHA, 32)
+        self.graphic = pygame.draw.circle(self.surface, self.color, (level, level), 5 + level)
 
     def load_player_data(self, player_id):
         with open("data/characters.json", 'r') as database:

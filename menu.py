@@ -44,7 +44,7 @@ class MenuDot():
         """Draws one of the dots in the data"""
         x = 510
         y = 510 + 30 * self.y
-        button_width = 200
+        button_width = 400
         button_height = 30
         if self.test_mos_pos(x-15, y-15, button_width, button_height, mos_pos):
             button_color = self.highlight

@@ -2,6 +2,7 @@ import pygame
 import json
 import sys
 import menu as m
+import libraries.eztext as eztext
 
 from dot import Dot
 from dot_base import base_data
@@ -73,6 +74,7 @@ class CharacterCreationMenu():
         self.all_classes = list(base_data.keys())
         self.selected_class = None
         self.current_name = ""
+        self.textbox = eztext.Input(y=300,maxlength=45, color=(0,105,92), prompt='First, name your dude: ')
         
     def draw_dot(self):
         pass
@@ -88,18 +90,24 @@ class CharacterCreationMenu():
     def run(self):
         """Runs the menu."""
         while 1:
+            events = pygame.event.get()
             mos_x, mos_y = pygame.mouse.get_pos()
             self.screen.fill((255, 255, 255))
             selection = self.draw_options(mos_x, mos_y)
-            for e in pygame.event.get():
+            self.textbox.update(events)
+            self.textbox.draw(self.screen)
+            for e in events:
                 if e.type == QUIT:
                     pygame.quit(); sys.exit()
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
                     pygame.quit(); sys.exit()
                 if e.type == pygame.MOUSEBUTTONUP and self.selected_class:
-                    dot = Dot()
-                    dot.create_new(self.selected_class, self.current_name)
-                    dot.save()
-                    menu = m.MainMenu(self.w, self.h)
-                    menu.run()
+                    if self.textbox.value.strip() == "":
+                        print("Name is empty. Enter a name.")
+                    else:
+                        dot = Dot()
+                        dot.create_new(self.selected_class, self.textbox.value)
+                        dot.save()
+                        menu = m.MainMenu(self.w, self.h)
+                        menu.run()
             pygame.display.update()
