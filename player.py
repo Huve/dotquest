@@ -24,7 +24,10 @@ class Player(Entity):
         class_color = {
             "tank": (255, 0, 0),
             "heal": (0, 255, 0),
-            "deep": (0, 0, 255)
+            "deep": (0, 0, 255),
+            "denk": (150, 0, 150),
+            "henk": (150, 150, 0),
+            "heep": (0, 150, 150)
             }
         return class_color[self.data['player_class']]
         
