@@ -67,7 +67,7 @@ base_data = {
                 "items": []},
             "heep": {
                 "level": 1,
-                "player_class": "deep",
+                "player_class": "heep",
                 "hp": 5,
                 "mana": 30, 
                 "int": 15,
@@ -83,7 +83,7 @@ base_data = {
                 "items": []},
             "henk": {
                 "level": 1,
-                "player_class": "deep",
+                "player_class": "henk",
                 "hp": 12,
                 "mana": 10, 
                 "int": 5,

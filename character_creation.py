@@ -90,6 +90,7 @@ class CharacterCreationMenu():
     def run(self):
         """Runs the menu."""
         while 1:
+            print(self.selected_class)
             events = pygame.event.get()
             mos_x, mos_y = pygame.mouse.get_pos()
             self.screen.fill((255, 255, 255))
