@@ -1,7 +1,7 @@
 import pygame
 import json
 import sys
-import menu as m
+import game_menu as m
 import libraries.eztext as eztext
 
 from dot import Dot

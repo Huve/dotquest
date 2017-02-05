@@ -2,7 +2,7 @@
 #
 # Jan 22 2016
 
-from menu import *
+from game_menu import *
 
 WIDTH = 1024
 HEIGHT = 768

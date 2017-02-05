@@ -1,12 +1,13 @@
 import json
 import pygame
-import random
+
 import sys
 
+from dot import Dot
 from dotquest_game import Game
 from character_creation import CharacterCreationMenu
 from pygame.locals import *
-from pygame import Rect
+
 
 class MenuDot():
     """A Dot to choose from on the home screen."""
@@ -21,6 +22,7 @@ class MenuDot():
         self.font = pygame.font.SysFont('Roboto', 20)
         self.background_color = (220, 220, 220)
         self.highlight = (208, 224, 227)
+        self.delete_highlight = (255, 0, 0)
 
     def choose(self):
         """Chooses this dot for play."""
@@ -40,11 +42,11 @@ class MenuDot():
         else:
             return False
         
-    def draw(self, mos_pos):
+    def draw_select(self, mos_pos):
         """Draws one of the dots in the data"""
         x = 510
         y = 510 + 30 * self.y
-        button_width = 400
+        button_width = 369
         button_height = 30
         if self.test_mos_pos(x-15, y-15, button_width, button_height, mos_pos):
             button_color = self.highlight
@@ -65,6 +67,26 @@ class MenuDot():
             dot_text = "+ Create new Dot"
             label = self.font.render(dot_text, 1, (0, 0, 0))
         self.screen.blit(label, (x+20, y-6))
+
+    def draw_delete(self, mos_pos):
+        """Draws the delete X for a dot."""
+        x = 880
+        y = 510 + 30 * self.y
+        button_width = 85
+        button_height = 30
+        if self.test_mos_pos(x-15, y-15, button_width, button_height, mos_pos):
+            button_color = self.delete_highlight
+            self.menu.delete_dot_id = self.dot_id
+        else:
+            if self.menu.delete_dot_id == self.dot_id:
+                self.menu.delete_dot_id = None
+            button_color = self.background_color
+        pygame.draw.rect(self.screen, button_color, (x-15, y-15, button_width, button_height))
+        if self.dot_id != "0":
+            dot_text = "DELETE"
+            label = self.font.render(dot_text, 1, (0, 0, 0))
+        self.screen.blit(label, (x, y-6))
+        
         
     def delete(self):
         """Deletes this dot permanently."""
@@ -87,10 +109,10 @@ class MainMenu():
         self.w = w
         self.h = h
         self.timer = 0
-        with open("data/characters.json", 'r') as database:
-            self.all_dots = json.load(database)
+        self.all_dots = self.load_dots()
         self.all_dots[0] = {}
         self.selected_dot_id = None
+        self.delete_dot_id = None
         self.menu_dots = []
         self.bloop_event = pygame.USEREVENT + 1
         self.bloops = {}
@@ -150,11 +172,12 @@ class MainMenu():
                 count += 1
                 menudot = MenuDot(self, dot, self.all_dots[dot], count)
                 self.menu_dots.append(menudot)
-                menudot.draw((x, y))
+                menudot.draw_select((x, y))
+                menudot.draw_delete((x, y))
         if count < 3:
             menudot = MenuDot(self, "0", {}, 3)
             self.menu_dots.append(menudot)
-            menudot.draw((x, y))
+            menudot.draw_select((x, y))
         
     def set_text(self, text, pos, color=(0, 0, 0)):
         """Sets the menu text."""
@@ -171,6 +194,12 @@ class MainMenu():
         game = Game(self.w, self.h, self.screen, dot)
         game.run()
 
+    def load_dots(self):
+        """Loads the dots from the db."""
+        with open("data/characters.json", 'r') as database:
+            all_dots = json.load(database)
+        return all_dots
+        
     def load_character_creation_menu(self):
         """Selects a character for this session."""
         char_creation_menu = CharacterCreationMenu(self.screen, self.w, self.h)
@@ -202,12 +231,15 @@ class MainMenu():
             seconds = (pygame.time.get_ticks()-start_ticks)/1000
             self.screen.fill((255, 255, 255))
             self.load_background("images/menu_background.png")
-            selection = self.draw_selections(mos_x, mos_y)
+            self.draw_selections(mos_x, mos_y)
             for e in pygame.event.get():
                 if e.type == QUIT:
                     pygame.quit(); sys.exit()
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
                     pygame.quit(); sys.exit()
+                if e.type == KEYDOWN and e.key == K_q and self.selected_dot_id:
+                    dot = Dot(self.selected_dot_id)
+                    dot.delete()
                 if e.type == self.bloop_event:
                     self.animate_bloops()
                 if e.type == pygame.MOUSEBUTTONUP and self.selected_dot_id:
@@ -215,4 +247,11 @@ class MainMenu():
                         self.load_game(self.selected_dot_id)
                     else:
                         self.load_character_creation_menu()
+                if e.type == pygame.MOUSEBUTTONUP and self.delete_dot_id:
+                    dot = Dot(self.delete_dot_id)
+                    dot.delete()
+                    self.all_dots = self.load_dots()
+                    self.screen.fill((255, 255, 255))
+                    self.load_background("images/menu_background.png")
+                    self.draw_selections(mos_x, mos_y)
             pygame.display.update()
