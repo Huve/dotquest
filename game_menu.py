@@ -24,10 +24,6 @@ class MenuDot():
         self.highlight = (208, 224, 227)
         self.delete_highlight = (255, 0, 0)
 
-    def choose(self):
-        """Chooses this dot for play."""
-        pass
-
     def test_mos_pos(self, x, y, width, height, mos_pos):
         """Detects if mos pos is in box."""
         mos_x, mos_y = mos_pos
@@ -86,11 +82,6 @@ class MenuDot():
             dot_text = "DELETE"
             label = self.font.render(dot_text, 1, (0, 0, 0))
         self.screen.blit(label, (x, y-6))
-        
-        
-    def delete(self):
-        """Deletes this dot permanently."""
-        pass
 
     def get_color(self):
         class_color = {
@@ -114,9 +105,12 @@ class MainMenu():
         self.selected_dot_id = None
         self.delete_dot_id = None
         self.menu_dots = []
+        self.bg = ""
         self.bloop_event = pygame.USEREVENT + 1
         self.bloops = {}
         pygame.init()
+        pygame.mixer.init()
+        pygame.mixer.set_num_channels(8)
         self.font = pygame.font.SysFont('Roboto', 45)
         self.display = pygame.display
         self.screen = self.display.set_mode((w, h))
@@ -161,7 +155,7 @@ class MainMenu():
             if self.bloops[key]['y'] > r.centery:
                 y_adjust = 1
             elif self.bloops[key]['y'] < r.centery:
-                 y_adjust = -1
+                y_adjust = -1
             r.move_ip(x_adjust, y_adjust)
             pygame.draw.circle(self.screen, c, (r.centerx, r.centery), r.width)
             
@@ -211,7 +205,6 @@ class MainMenu():
 
     def play_menu_music(self):
         """Plays the menu music for dotquest."""
-        pygame.mixer.init()
         pygame.mixer.music.load("audio/splort_2.mp3")
         pygame.mixer.music.play(-1)
 
@@ -228,7 +221,6 @@ class MainMenu():
         
         while 1:
             mos_x, mos_y = pygame.mouse.get_pos()
-            seconds = (pygame.time.get_ticks()-start_ticks)/1000
             self.screen.fill((255, 255, 255))
             self.load_background("images/menu_background.png")
             self.draw_selections(mos_x, mos_y)
@@ -250,6 +242,8 @@ class MainMenu():
                 if e.type == pygame.MOUSEBUTTONUP and self.delete_dot_id:
                     dot = Dot(self.delete_dot_id)
                     dot.delete()
+                    self.selected_dot_id = None
+                    self.delete_dot_id = None
                     self.all_dots = self.load_dots()
                     self.screen.fill((255, 255, 255))
                     self.load_background("images/menu_background.png")
