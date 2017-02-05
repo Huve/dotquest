@@ -14,11 +14,13 @@ class Player(Entity):
     """Player class Entity."""
     def __init__(self, pid):
         Entity.__init__(self)
+        self.color = None
+        self.data = {}
         self.load_player_data(pid)
         self.rect = pygame.Rect(self.data['x'],
                                 self.data['y'],
-                                self.data['level'],
-                                self.data['level'])
+                                2 * self.data['level'] + 20,
+                                2 * self.data['level'] + 20)
 
     def get_color(self):
         class_color = {
@@ -84,11 +86,12 @@ class Player(Entity):
                 if yvel < 0:
                     self.rect.top = p.rect.bottom
 
-            
     def draw_player(self):
         level = self.data["level"]
-        self.surface = pygame.Surface((5 + level, 5 + level), pygame.SRCALPHA, 32)
-        self.graphic = pygame.draw.circle(self.surface, self.color, (level, level), 5 + level)
+        width = 2 * level + 20
+        half_width = int(width / 2)
+        self.surface = pygame.Surface((width, width), pygame.SRCALPHA, 32)
+        self.graphic = pygame.draw.circle(self.surface, self.color, (half_width, half_width), half_width)
 
     def load_player_data(self, player_id):
         with open("data/characters.json", 'r') as database:

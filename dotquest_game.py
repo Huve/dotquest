@@ -68,5 +68,3 @@ class Game():
             self.player.update(self.direction, self.layer_1)
             self.screen.draw_layers() 
 
-            
-        
