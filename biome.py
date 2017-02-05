@@ -8,10 +8,10 @@ class Block(Entity):
     def __init__(self, a, x, y):
         Entity.__init__(self)
         self.image_map = {
-        "T":"images/tree_2.png",
-        "V":"images/bush_1.png",
+        "T":"images/stump_1.png",
+        "V":"images/bush_2.png",
         "R":"images/rock_1.png",
-        "X":"images/bush_1.png",
+        "X":"images/bush_2.png",
         }
         self.image = pygame.Surface((64, 64))
         self.image = pygame.image.load(self.image_map[a])
