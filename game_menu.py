@@ -109,8 +109,6 @@ class MainMenu():
         self.bloop_event = pygame.USEREVENT + 1
         self.bloops = {}
         pygame.init()
-        pygame.mixer.init()
-        pygame.mixer.set_num_channels(8)
         self.font = pygame.font.SysFont('Roboto', 45)
         self.display = pygame.display
         self.screen = self.display.set_mode((w, h))
@@ -205,8 +203,10 @@ class MainMenu():
 
     def play_menu_music(self):
         """Plays the menu music for dotquest."""
-        pygame.mixer.music.load("audio/splort_2.mp3")
-        pygame.mixer.music.play(-1)
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.init()
+            pygame.mixer.music.load("audio/splort_2.mp3")
+            pygame.mixer.music.play(-1)
 
     def run(self):
         """Runs the menu."""
