@@ -2,12 +2,10 @@
 #
 # April 3 2016
 import pygame
-import json # change when moving to sqlite
-import glob # change when moving to sqlite
+import json  # change when moving to sqlite
 
-class Entity(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+from abilities import class_abilities
+from game_entity import Entity
 
         
 class Player(Entity):
@@ -21,6 +19,8 @@ class Player(Entity):
                                 self.data['y'],
                                 2 * self.data['level'] + 20,
                                 2 * self.data['level'] + 20)
+        self.player_class = self.data['player_class']
+        self.left_click_ability = class_abilities[self.player_class][0]
 
     def get_color(self):
         class_color = {
@@ -37,11 +37,7 @@ class Player(Entity):
         """Update the player's position.
         
         Args:
-            up: boolean referring to keypress up.
-            down: boolean referring to keypress down.
-            left: boolean referring to keypress left.
-            right: boolean referring to keypress right.
-            running: boolean referring to spacebar press.
+            direction: the direction the player is running.
             layer_1: list of sprites that player can collide with.
         """
         if direction == "up":
@@ -63,7 +59,6 @@ class Player(Entity):
         self.rect.top += self.yvel
         self.collide(self.xvel, 0, layer_1)
         self.collide(0, self.yvel, layer_1)
-
         
     def collide(self, xvel, yvel, layer_1):
         """Determine if player is colliding with objects
@@ -75,8 +70,8 @@ class Player(Entity):
         """
         for p in layer_1:
             if pygame.sprite.collide_rect(self, p):
-               # if isinstance(p, GroundBlock):
-                   # pass  # TODO(huve): add doors to this ExitBlock
+                # if isinstance(p, GroundBlock):
+                    # pass TODO(huve): add doors to this ExitBlock
                 if xvel > 0:
                     self.rect.right = p.rect.left
                 if xvel < 0:
@@ -85,6 +80,12 @@ class Player(Entity):
                     self.rect.bottom = p.rect.top
                 if yvel < 0:
                     self.rect.top = p.rect.bottom
+
+    def use_ability(self, screen, coords):
+        """Uses the left click ability"""
+        player_screen_x = self.rect.centerx + screen.camera.state.left
+        player_screen_y = self.rect.centery + screen.camera.state.top
+        self.left_click_ability.do_ability(screen, coords, (player_screen_x, player_screen_y))
 
     def draw_player(self):
         level = self.data["level"]

@@ -93,7 +93,7 @@ class CharacterCreationMenu():
             events = pygame.event.get()
             mos_x, mos_y = pygame.mouse.get_pos()
             self.screen.fill((255, 255, 255))
-            selection = self.draw_options(mos_x, mos_y)
+            self.draw_options(mos_x, mos_y)
             self.textbox.update(events)
             self.textbox.draw(self.screen)
             for e in events:
@@ -101,7 +101,7 @@ class CharacterCreationMenu():
                     pygame.quit(); sys.exit()
                 if e.type == KEYDOWN and e.key == K_ESCAPE:
                     pygame.quit(); sys.exit()
-                if e.type == pygame.MOUSEBUTTONUP and self.selected_class:
+                if e.type == pygame.MOUSEBUTTONUP and self.selected_class and e.button == 1:
                     if self.textbox.value.strip() == "":
                         print("Name is empty. Enter a name.")
                     else:

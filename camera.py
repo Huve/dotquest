@@ -1,12 +1,12 @@
 from pygame import Rect
 from run_game import WIDTH, HEIGHT, HALF_WIDTH, HALF_HEIGHT
 
+
 class Camera(object):
     """A camera that follows a sprite."""
     def __init__(self, function, w, h):
         self.function = function
         self.state = Rect(0, 0, w, h)
-        
         
     def apply(self, target):
         """Applies the camera to a target to blit all objects on the screen.
@@ -18,7 +18,6 @@ class Camera(object):
             position and size of the object on the screen.
         """
         return target.rect.move(self.state.topleft)
-        
         
     def update(self, target):
         """Updates the camera's location based on center target (i.e., the player).

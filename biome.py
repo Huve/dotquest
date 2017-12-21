@@ -3,6 +3,7 @@ import math
 import pygame
 from player import Entity
 
+
 class Block(Entity):
     """An entity that acts as a first layer (collision layer) tile on the map."""
     def __init__(self, a, x, y):
@@ -20,6 +21,7 @@ class Block(Entity):
 
     def update(self):
         pass
+
 
 class Biome():
     """A biome in which players can journey."""

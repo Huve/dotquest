@@ -31,7 +31,6 @@ class GameScreen():
         self.camera.update(self.player)
         self.screen.blit(self.biome.background_surface, (self.camera.state[0], self.camera.state[1]))
         self.screen.blit(self.player.surface, self.camera.apply(self.player))
-        #pygame.display.flip()
         for e in self.entity_layer_1:
            e.update()
            self.screen.blit(e.image, self.camera.apply(e))

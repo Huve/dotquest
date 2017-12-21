@@ -239,7 +239,7 @@ class MainMenu():
                         self.load_game(self.selected_dot_id)
                     else:
                         self.load_character_creation_menu()
-                if e.type == pygame.MOUSEBUTTONUP and self.delete_dot_id:
+                if e.type == pygame.MOUSEBUTTONUP and self.delete_dot_id and e.button == 1:
                     dot = Dot(self.delete_dot_id)
                     dot.delete()
                     self.selected_dot_id = None
